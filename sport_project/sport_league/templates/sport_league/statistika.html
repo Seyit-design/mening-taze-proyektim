@@ -1,0 +1,340 @@
+{% extends 'sport_league/base.html' %}
+
+{% block title %}Statistika{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Statistika</h1>
+        <p class="lead">Sport ýaryşlarynyň umumy statistikasy</p>
+    </div>
+</div>
+
+<!-- Umumy statistika -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Umumy statistika</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card bg-info text-white">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Oýunçylar</h5>
+                                <h2 class="display-4">{{ umumy_stat.oyuncu }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Fakultetler</h5>
+                                <h2 class="display-4">{{ umumy_stat.fakultet }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card bg-warning text-white">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Sport görnüşleri</h5>
+                                <h2 class="display-4">{{ umumy_stat.sport }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card bg-danger text-white">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Ýaryşlar</h5>
+                                <h2 class="display-4">{{ umumy_stat.yarys }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-4 mb-3">
+                        <div class="card stat-card bg-secondary text-white">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Umumy gatnaşyk</h5>
+                                <h2 class="display-4">{{ umumy_stat.gatnashyk }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card stat-card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Ýeňişler</h5>
+                                <h2 class="display-4">{{ umumy_stat.yenis }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card stat-card bg-danger text-white">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Ýeňlişler</h5>
+                                <h2 class="display-4">{{ umumy_stat.utuldy }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fakultetler boýunça statistika -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Fakultetler boýunça statistika</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fakultet</th>
+                                <th>Oýunçy sany</th>
+                                <th>Ýeňiş sany</th>
+                                <th>Ýeňliş sany</th>
+                                <th>Umumy gatnaşyk</th>
+                                <th>Üstünlik prosenti</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fakultet in fakultet_stat %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <strong>{{ fakultet.ady }}</strong>
+                                    {% if fakultet.gysgaltma %}
+                                        <small>({{ fakultet.gysgaltma }})</small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ fakultet.oyuncu_sany }}</td>
+                                <td><span class="badge bg-success">{{ fakultet.yenis_sany }}</span></td>
+                                <td><span class="badge bg-danger">{{ fakultet.utuldy_sany }}</span></td>
+                                <td>{{ fakultet.umumy_gatnashyk }}</td>
+                                <td>
+                                    {% if fakultet.umumy_gatnashyk > 0 %}
+                                        <div class="progress">
+                                            {% with prosent=fakultet.utus_prosenti|floatformat:0 %}
+                                            <div class="progress-bar bg-success" style="width: {{ prosent }}%">
+                                                {{ prosent }}%
+                                            </div>
+                                            {% endwith %}
+                                        </div>
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">Hiç hili fakultet ýok</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sport görnüşleri boýunça statistika -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Sport görnüşleri boýunça statistika</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Sport görnüşi</th>
+                                <th>Oýunçy sany</th>
+                                <th>Ýaryş sany</th>
+                                <th>Ýeňiş sany</th>
+                                <th>Gatnaşyk sany</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sport in sport_stat %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <strong>{{ sport.ady }}</strong>
+                                    {% if sport.toparlygy %}
+                                        <span class="badge bg-info">Toparlaýyn</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ sport.oyuncu_sany }}</td>
+                                <td>{{ sport.yarys_sany }}</td>
+                                <td><span class="badge bg-success">{{ sport.yenis_sany }}</span></td>
+                                <td>{{ sport.gatnashyk_sany }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">Hiç hili sport görnüşi ýok</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Kurslar boýunça statistika -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">Kurslar boýunça statistika</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Kurs</th>
+                                <th>Oýunçy sany</th>
+                                <th>Ýeňiş sany</th>
+                                <th>Diagramma</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for kurs in kurs_stat %}
+                            <tr>
+                                <td><strong>{{ kurs.kurs }} kurs</strong></td>
+                                <td>{{ kurs.oyuncu_sany }}</td>
+                                <td>{{ kurs.yenis_sany }}</td>
+                                <td style="width: 50%;">
+                                    {% if kurs.oyuncu_sany > 0 %}
+                                        <div class="progress">
+                                            {% with prosent=kurs.oyuncu_sany %}
+                                            <div class="progress-bar bg-info" style="width: {{ prosent }}%">
+                                                {{ prosent }} oýunçy
+                                            </div>
+                                            {% endwith %}
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">Hiç hili maglumat ýok</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Diagrammalar üçin JavaScript -->
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Fakultetler boýunça diagramma
+    const fakultetCtx = document.getElementById('fakultetChart');
+    if (fakultetCtx) {
+        new Chart(fakultetCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for f in fakultet_stat %}'{{ f.gysgaltma|default:f.ady|slice:":10" }}',{% endfor %}],
+                datasets: [{
+                    label: 'Ýeňiş sany',
+                    data: [{% for f in fakultet_stat %}{{ f.yenis_sany }},{% endfor %}],
+                    backgroundColor: 'rgba(40, 167, 69, 0.5)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Fakultetler boýunça ýeňişler'
+                    }
+                }
+            }
+        });
+    }
+
+    // Sport görnüşleri boýunça diagramma
+    const sportCtx = document.getElementById('sportChart');
+    if (sportCtx) {
+        new Chart(sportCtx, {
+            type: 'pie',
+            data: {
+                labels: [{% for s in sport_stat %}'{{ s.ady|slice:":15" }}',{% endfor %}],
+                datasets: [{
+                    data: [{% for s in sport_stat %}{{ s.yarys_sany }},{% endfor %}],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                        'rgba(255, 159, 64, 0.5)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Sport görnüşleri boýunça ýaryşlar'
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
+
+<!-- Diagrammalar üçin canvas elementleri -->
+<div class="row mb-5">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Fakultetler boýunça ýeňişler</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="fakultetChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Sport görnüşleri boýunça ýaryşlar</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="sportChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'sport_league/base.html' %}
+
+{% block title %}{{ oyuncu.tamam_ady }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'bas_sahypa' %}">Baş sahypa</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'oyuncu_list' %}">Oýunçylar</a></li>
+                <li class="breadcrumb-item active">{{ oyuncu.tamam_ady }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Oýunçy maglumatlary -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Oýunçy maglumatlary</h5>
+            </div>
+            <div class="card-body text-center">
+                {% if oyuncu.surat %}
+                <img src="{{ oyuncu.surat.url }}" class="rounded-circle img-fluid mb-3" style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 200px; height: 200px; font-size: 4rem;">
+                    {{ oyuncu.ady|first }}{{ oyuncu.familiyasy|first }}
+                </div>
+                {% endif %}
+                
+                <h3>{{ oyuncu.familiyasy }} {{ oyuncu.ady }}</h3>
+                
+                <table class="table table-borderless text-start">
+                    <tr>
+                        <th>Fakultet:</th>
+                        <td>{{ oyuncu.fakultet.ady }}</td>
+                    </tr>
+                    <tr>
+                        <th>Kurs:</th>
+                        <td>{{ oyuncu.kurs }}</td>
+                    </tr>
+                    <tr>
+                        <th>Topar:</th>
+                        <td>{{ oyuncu.topar }}</td>
+                    </tr>
+                    <tr>
+                        <th>Esasy sport:</th>
+                        <td>{{ oyuncu.esasgy_sport.ady|default:"Bellenilmedik" }}</td>
+                    </tr>
+                    {% if oyuncu.telefon %}
+                    <tr>
+                        <th>Telefon:</th>
+                        <td>{{ oyuncu.telefon }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if oyuncu.email %}
+                    <tr>
+                        <th>E-mail:</th>
+                        <td>{{ oyuncu.email }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th>Goşulan sene:</th>
+                        <td>{{ oyuncu.gosulan_sene|date:"d.m.Y" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistika we ýaryşlar -->
+    <div class="col-md-8 mb-4">
+        <!-- Statistika kartoçkalary -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Ýeňiş</h5>
+                        <h2>{{ yenis_sany }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-danger text-white text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Ýeňliş</h5>
+                        <h2>{{ utuldy_sany }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Dowam edýär</h5>
+                        <h2>{{ dowam_sany }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-info text-white text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Üstünlik %</h5>
+                        <h2>{{ utus_prosenti|default:"0" }}%</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sport görnüşleri -->
+        {% if sport_stat %}
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Sport görnüşleri boýunça statistika</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Sport görnüşi</th>
+                                <th>Ýaryş sany</th>
+                                <th>Ýeňiş sany</th>
+                                <th>Üstünlik %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sport, stat in sport_stat.items %}
+                            <tr>
+                                <td>{{ sport }}</td>
+                                <td>{{ stat.yarys_sany }}</td>
+                                <td>{{ stat.yenis_sany }}</td>
+                                <td>
+                                    {% if stat.yarys_sany > 0 %}
+                                        {% widthratio stat.yenis_sany stat.yarys_sany 100 %}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Ýaryşlar taryhy -->
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Ýaryşlar taryhy</h5>
+            </div>
+            <div class="card-body">
+                {% if yaryslar %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Ýaryş</th>
+                                <th>Sene</th>
+                                <th>Sport</th>
+                                <th>Netije</th>
+                                <th>Orun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for gatnashyk in yaryslar %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'yarys_detail' gatnashyk.yarys.id %}">
+                                        {{ gatnashyk.yarys.ady }}
+                                    </a>
+                                </td>
+                                <td>{{ gatnashyk.yarys.baslanjak_sene|date:"d.m.Y" }}</td>
+                                <td>{{ gatnashyk.yarys.sport_gornushi.ady }}</td>
+                                <td>
+                                    {% if gatnashyk.netije == 'yenis' %}
+                                    <span class="badge bg-success">Ýeňiş</span>
+                                    {% elif gatnashyk.netije == 'utuldy' %}
+                                    <span class="badge bg-danger">Ýeňliş</span>
+                                    {% elif gatnashyk.netije == 'dowam' %}
+                                    <span class="badge bg-warning">Dowam edýär</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ gatnashyk.netije }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if gatnashyk.orun %}
+                                        {{ gatnashyk.orun }} orun
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center">
+                    Bu oýunçy entek hiç bir ýaryşa gatnaşmadyk.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

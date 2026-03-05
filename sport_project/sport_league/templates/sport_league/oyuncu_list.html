@@ -1,0 +1,126 @@
+{% extends 'sport_league/base.html' %}
+
+{% block title %}Oýunçylar Sanawy{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Oýunçylar Sanawy</h1>
+        <p class="lead">Ähli aktiv oýunçylaryň sanawy</p>
+    </div>
+</div>
+
+<!-- Filtrleme bölümi -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Filtrleme</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="fakultet" class="form-label">Fakultet</label>
+                        <select name="fakultet" id="fakultet" class="form-select">
+                            <option value="">Ählisi</option>
+                            {% for f in fakultetler %}
+                            <option value="{{ f.id }}" {% if selected_fakultet == f.id|stringformat:"s" %}selected{% endif %}>{{ f.ady }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="sport" class="form-label">Sport görnüşi</label>
+                        <select name="sport" id="sport" class="form-select">
+                            <option value="">Ählisi</option>
+                            {% for s in sport_gornusleri %}
+                            <option value="{{ s.id }}" {% if selected_sport == s.id|stringformat:"s" %}selected{% endif %}>{{ s.ady }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="kurs" class="form-label">Kurs</label>
+                        <select name="kurs" id="kurs" class="form-select">
+                            <option value="">Ählisi</option>
+                            {% for k in kurslar %}
+                            <option value="{{ k }}" {% if selected_kurs == k|stringformat:"s" %}selected{% endif %}>{{ k }} kurs</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="search" class="form-label">Gözleg</label>
+                        <input type="text" name="search" id="search" class="form-control" value="{{ search_query|default:'' }}" placeholder="Ady, familiýasy...">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Filtrle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Oýunçylar sanawy -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Oýunçylar ({{ oyuncular|length }} sany)</h5>
+                <span class="badge bg-light text-dark">Ýeňiş sany boýunça tertipleşdirilen</span>
+            </div>
+            <div class="card-body">
+                {% if oyuncular %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Oýunçy</th>
+                                <th>Fakultet</th>
+                                <th>Kurs</th>
+                                <th>Topar</th>
+                                <th>Esasy sport</th>
+                                <th>Ýeňiş sany</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for oyuncu in oyuncular %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        {% if oyuncu.surat %}
+                                        <img src="{{ oyuncu.surat.url }}" class="rounded-circle me-2" width="40" height="40" style="object-fit: cover;">
+                                        {% else %}
+                                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                            {{ oyuncu.ady|first }}{{ oyuncu.familiyasy|first }}
+                                        </div>
+                                        {% endif %}
+                                        <div>
+                                            <strong>{{ oyuncu.familiyasy }} {{ oyuncu.ady }}</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ oyuncu.fakultet.gysgaltma|default:oyuncu.fakultet.ady }}</td>
+                                <td>{{ oyuncu.kurs }}</td>
+                                <td>{{ oyuncu.topar }}</td>
+                                <td>{{ oyuncu.esasgy_sport.ady|default:"Bellenilmedik" }}</td>
+                                <td><span class="badge bg-success">{{ oyuncu.yenis_sany }}</span></td>
+                                <td>
+                                    <a href="{% url 'oyuncu_detail' oyuncu.id %}" class="btn btn-sm btn-primary">Giňişleýin</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center">
+                    Hiç hili oýunçy tapylmady.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

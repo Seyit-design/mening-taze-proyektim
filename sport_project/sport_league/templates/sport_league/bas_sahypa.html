@@ -1,0 +1,91 @@
+{% extends 'sport_league/base.html' %}
+
+{% block title %}Baş sahypa - Sport Ýaryşlary{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-4">Hoş geldiňiz!</h1>
+        <p class="lead">Sport ýaryşlary dolandyryş ulgamyna hoş geldiňiz.</p>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-3">
+        <div class="card stat-card bg-primary text-white">
+            <div class="card-body text-center">
+                <h5 class="card-title">Umumy oýunçylar</h5>
+                <h2 class="display-4">{{ umumy_oyuncu }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-success text-white">
+            <div class="card-body text-center">
+                <h5 class="card-title">Ýeňiş gazananlar</h5>
+                <h2 class="display-4">{{ yenis_gazanan }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-warning text-white">
+            <div class="card-body text-center">
+                <h5 class="card-title">Ýaryşlar</h5>
+                <h2 class="display-4">{{ yarys_sany }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-info text-white">
+            <div class="card-body text-center">
+                <h5 class="card-title">Fakultetler</h5>
+                <h2 class="display-4">{{ fakultet_sany }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Soňky ýaryşlar</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for yarys in sonky_yaryslar %}
+                <a href="{% url 'yarys_detail' yarys.pk %}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">{{ yarys.ady }}</h6>
+                        <small>{{ yarys.baslanjak_sene|date:"d.m.Y" }}</small>
+                    </div>
+                    <p class="mb-1">{{ yarys.yer }} | {{ yarys.sport_gornushi }}</p>
+                </a>
+                {% empty %}
+                <div class="list-group-item">Heniz ýaryş ýok</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Iň gowy oýunçylar</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for oyuncu in oyuncular %}
+                <a href="{% url 'oyuncu_detail' oyuncu.pk %}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">{{ oyuncu.tamam_ady }}</h6>
+                        <span class="badge bg-success">{{ oyuncu.yenis_sany }} ýeňiş</span>
+                    </div>
+                    <p class="mb-1">{{ oyuncu.fakultet }} | {{ oyuncu.topar }}</p>
+                </a>
+                {% empty %}
+                <div class="list-group-item">Heniz oýunçy ýok</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

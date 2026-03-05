@@ -1,0 +1,117 @@
+{% extends 'sport_league/base.html' %}
+
+{% block title %}Ýaryşlar Sanawy{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Ýaryşlar Sanawy</h1>
+        <p class="lead">Ähli ýaryşlaryň sanawy</p>
+    </div>
+</div>
+
+<!-- Filtrleme bölümi -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Filtrleme</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="status" class="form-label">Ýagdaýy</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">Ählisi</option>
+                            {% for status_key, status_value in statuslar %}
+                            <option value="{{ status_key }}" {% if selected_status == status_key %}selected{% endif %}>{{ status_value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sport" class="form-label">Sport görnüşi</label>
+                        <select name="sport" id="sport" class="form-select">
+                            <option value="">Ählisi</option>
+                            {% for sport in sport_gornusleri %}
+                            <option value="{{ sport.id }}" {% if selected_sport == sport.id|stringformat:"s" %}selected{% endif %}>{{ sport.ady }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="search" class="form-label">Gözleg</label>
+                        <input type="text" name="search" id="search" class="form-control" value="{{ search_query|default:'' }}" placeholder="Ýaryş ady, ýeri...">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Filtrle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ýaryşlar sanawy -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Ýaryşlar ({{ yaryslar|length }} sany)</h5>
+            </div>
+            <div class="card-body">
+                {% if yaryslar %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ýaryş ady</th>
+                                <th>Sport görnüşi</th>
+                                <th>Geçirilýän ýeri</th>
+                                <th>Başlanjak senesi</th>
+                                <th>Gatnaşyjylar</th>
+                                <th>Ýeňijiler</th>
+                                <th>Ýagdaýy</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for yarys in yaryslar %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <strong>{{ yarys.ady }}</strong>
+                                </td>
+                                <td>{{ yarys.sport_gornushi.ady }}</td>
+                                <td>{{ yarys.yer }}</td>
+                                <td>{{ yarys.baslanjak_sene|date:"d.m.Y H:i" }}</td>
+                                <td><span class="badge bg-info">{{ yarys.gatnashyjylar_sany }}</span></td>
+                                <td><span class="badge bg-success">{{ yarys.yenijiler_sany }}</span></td>
+                                <td>
+                                    {% if yarys.status == 'planlanan' %}
+                                    <span class="badge bg-warning">Meýilleşdirilen</span>
+                                    {% elif yarys.status == 'dowam_edyar' %}
+                                    <span class="badge bg-primary">Dowam edýär</span>
+                                    {% elif yarys.status == 'tamamlanyldy' %}
+                                    <span class="badge bg-success">Tamamlanan</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ yarys.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'yarys_detail' yarys.id %}" class="btn btn-sm btn-primary">Giňişleýin</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center">
+                    Hiç hili ýaryş tapylmady.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
